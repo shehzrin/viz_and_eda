@@ -5,7 +5,7 @@ output: github_document
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-library(ggridges)
+library(patchwork)
 ```
 
 ```{r}
@@ -35,7 +35,7 @@ weather_df |>
   geom_point(alpha=.3) +
   labs(
     title = "Temperature scatterplot",
-    x = "Minimum Temp (C)".
+    x = "Minimum Temp (C)",
     y = "Maximum Temp (C)",
     color = "Location",
     caption = "Weather data taken from rnoaa package for three stations."
@@ -82,7 +82,7 @@ weather_df |>
 ```
 
 
-viridis:
+viridis: color scheme that works well with color blindness and black and white. 
 
 ```{r}
 weather_df |>
@@ -97,4 +97,135 @@ weather_df |>
   ) + 
   viridis::scale_color_viridis(discrete = TRUE)
 ```
+
+
+## Themes
+
+```{r}
+ggp_scatterplot = weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha=.3) +
+  labs(
+    title = "Temperature scatterplot",
+    x = "Minimum Temp (C)",
+    y = "Maximum Temp (C)",
+    color = "Location",
+    caption = "Weather data taken from rnoaa package for three stations."
+  ) + 
+  viridis::scale_color_viridis(discrete = TRUE)
+```
+
+```{r}
+ggp_scatterplot + 
+  theme(legend.position = "bottom")
+```
+
+```{r}
+ggp_scatterplot + 
+  theme_bw() + 
+  theme(legend.position = "bottom")
+```
+
+Order matters...
+
+```{r}
+ggp_scatterplot + 
+  theme(legend.position = "bottom") + 
+  theme_bw() 
+```
+
+minimal
+```{r}
+ggp_scatterplot + 
+  theme_minimal() + 
+  theme(legend.position = "bottom")
+```
+
+classic
+```{r}
+ggp_scatterplot + 
+  theme_classic() + 
+  theme(legend.position = "bottom")
+```
+
+theme excel
+```{r}
+ggp_scatterplot + 
+  ggthemes::theme_excel() + 
+  theme(legend.position = "bottom")
+```
+
+
+New scatterplot
+
+```{r}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE) + 
+   viridis::scale_color_viridis(discrete = TRUE) + 
+  labs(
+    title = "Seasonal variation in Max Temp",
+    x = "Date",
+    y = "Maximum Temp(C)",
+    color = "Location",
+    size = "Precipitation"
+  ) + 
+  theme_minimal() + 
+  theme(legend.position = "bottom")
+```
+
+
+Extra bonus stuff in 'ggplot'
+
+Use different datasets in different `geom`s
+```{r}
+central_park_df =
+  weather_df |>
+  filter(name == "CentralPark_NY")
+
+molokai_df = 
+  weather_df |>
+  filter(name == "Molokai_HI")
+
+molokai_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point() +
+  geom_line(data = central_park_df)
+```
+
+
+## Multiple panels
+```{r}
+weather_df |>
+  ggplot(aes(x = tmax, fill = name)) +
+  geom_density() +
+  facet_grid(.~name)
+```
+
+
+adding patchwork library for 
+```{r}
+ggp_tmax_tmin = 
+  weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = 0.3)
+
+ggp_tmax_density = 
+  weather_df |>
+  ggplot(aes(x = tmax, fill = name)) + 
+  geom_density(alpha = 0.3)
+
+ggp_tmax_date = 
+  weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) + 
+  geom_point() +
+  geom_smooth(se = FALSE)
+
+(ggp_tmax_tmin + ggp_tmax_density) / ggp_tmax_date 
+```
+
+
+
+
 
