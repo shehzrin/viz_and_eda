@@ -106,3 +106,117 @@ weather_df |>
 ```
 
 
+## Small things
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(aes(color = name), alpha = .3) +
+  geom_smooth(se = FALSE) 
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point(color = "blue")
+```
+
+
+## Univariate plots 
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, color = name)) +
+  geom_histogram()
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram(position="dodge")
+```
+
+how would i fix this? maybe facet?
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_histogram() +
+  facet_grid(.~name)
+```
+
+maybe a density plot?
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, fill = name)) +
+  geom_density(alpha = .3)
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+  geom_boxplot()
+```
+
+violin plots 
+
+```{r}
+weather_df |>
+  ggplot(aes(x = name, y = tmin, fill = name)) +
+  geom_violin()
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = name)) +
+  geom_density_ridges()
+```
+
+```{r}
+weather_df |>
+  ggplot(aes(x = prcp, fill = name)) + 
+  geom_density(alpha = .3) 
+
+weather_df |>
+  ggplot(aes(x = name, y = prcp)) + 
+  geom_boxplot
+
+weather_df |>
+  filter(prcp > 10, prcp < 1000) |>
+  ggplot(aes(x = prcp, fill = name)) +
+  geom_density(alpha = 0.3)
+```
+
+
+## Saving and embedding plots 
+
+```{r}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point()
+
+ggsave("gg_weather.pdf", ggp_weather, width = 8, height = 6)
+```
+
+embedding plots 
+
+```{r, fig.width = 6, fig.asp = .6}
+weather_df |>
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_point()
+```
+
+
